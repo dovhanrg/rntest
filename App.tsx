@@ -8,13 +8,13 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
-import {APP_ROUTES} from './src/routes';
+import {APP_ROUTES, RootStackParamList} from './src/routes';
 import {Home} from './src/components/Home';
 import {Post} from './src/components/Post';
 import {NewPost} from './src/components/NewPost';
 import {Modal} from './src/components/common/Modal';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function App(): React.JSX.Element {
   return (

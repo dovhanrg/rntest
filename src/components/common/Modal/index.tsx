@@ -1,8 +1,8 @@
 import {Pressable, StyleSheet, View} from 'react-native';
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
 import {Button} from '../Button';
 import firestore from '@react-native-firebase/firestore';
+import {ModalProps} from '../../../routes';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -32,12 +32,7 @@ const styles = StyleSheet.create({
   },
 });
 
-type Props = {
-  route: {params: {id: string}};
-};
-
-export function Modal({route}: Props) {
-  const navigation = useNavigation();
+export function Modal({route, navigation}: ModalProps) {
   const {params} = route;
   const onDelete = () => {
     firestore()

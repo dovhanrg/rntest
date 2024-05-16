@@ -7,8 +7,8 @@ import {
   View,
 } from 'react-native';
 import {PostHeader} from './PostHeader';
-import {TPost} from '../../store';
 import dayjs from 'dayjs';
+import {PostProps} from '../../routes';
 
 const styles = StyleSheet.create({
   wrapper: {flex: 1},
@@ -45,11 +45,7 @@ const styles = StyleSheet.create({
   },
 });
 
-type Props = {
-  route: {params: {post: TPost}};
-};
-
-export function Post({route}: Props) {
+export function Post({route}: PostProps) {
   const {
     params: {post},
   } = route;
