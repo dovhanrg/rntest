@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "31457020798",
+    "project_id": "rntest-f8055",
+    "storage_bucket": "rntest-f8055.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:31457020798:android:2e04e30ae6db88297fc12f",
+        "android_client_info": {
+          "package_name": "com.rntest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMwA3hBbwww_bs7bL5B7RQB6ZHl7Gqz_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

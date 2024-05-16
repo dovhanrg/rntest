@@ -1,11 +1,12 @@
 import {create} from 'zustand';
 
-type TPost = {
+export type TPost = {
   id: string;
   title: string;
   text: string;
-  time: string;
+  createdAt: string;
   imageUrl?: string;
+  link?: string;
 };
 
 type State = {

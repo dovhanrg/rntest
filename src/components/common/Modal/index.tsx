@@ -2,6 +2,7 @@ import {Pressable, StyleSheet, View} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {Button} from '../Button';
+import firestore from '@react-native-firebase/firestore';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -31,8 +32,22 @@ const styles = StyleSheet.create({
   },
 });
 
-export function Modal() {
+type Props = {
+  route: {params: {id: string}};
+};
+
+export function Modal({route}: Props) {
   const navigation = useNavigation();
+  const {params} = route;
+  const onDelete = () => {
+    firestore()
+      .collection('news')
+      .doc(params.id)
+      .delete()
+      .finally(() => {
+        navigation.goBack();
+      });
+  };
   return (
     <View style={styles.wrapper}>
       <Pressable
@@ -42,7 +57,7 @@ export function Modal() {
       <View style={styles.container}>
         <Button
           title={'Delete'}
-          onPress={() => navigation.goBack()}
+          onPress={onDelete}
           customStyles={styles.buttonDelete}
         />
         <View style={styles.buttonSeparator} />

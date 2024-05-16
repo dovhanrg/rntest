@@ -1,6 +1,10 @@
 import {ImageBackground, Pressable, StyleSheet, Text, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
 import {APP_ROUTES} from '../../routes';
+import {TPost} from '../../store';
 
 const styles = StyleSheet.create({
   container: {
@@ -41,20 +45,28 @@ const styles = StyleSheet.create({
 });
 
 type Props = {
-  title: string;
-  imageUrl?: string;
-  text: string;
-  time: string;
+  post: TPost;
 };
 
-export function PostPreview({title, text, imageUrl, time}: Props) {
+export function PostPreview({post}: Props) {
   const navigation = useNavigation();
+  const {title, text, imageUrl, createdAt, id} = post;
   return (
     <View>
       <Pressable
         style={styles.container}
-        onLongPress={() => navigation.navigate(APP_ROUTES.Modal as never)}
-        onPress={() => navigation.navigate(APP_ROUTES.Post as never)}>
+        onLongPress={() =>
+          // @ts-ignore
+          navigation.navigate(APP_ROUTES.Modal as never, {
+            id,
+          })
+        }
+        onPress={() =>
+          // @ts-ignore
+          navigation.navigate(APP_ROUTES.Post as never, {
+            post,
+          })
+        }>
         <ImageBackground
           source={{uri: imageUrl}}
           resizeMode="cover"
@@ -65,7 +77,7 @@ export function PostPreview({title, text, imageUrl, time}: Props) {
             <Text style={styles.text} numberOfLines={1} ellipsizeMode="tail">
               {text}
             </Text>
-            <Text style={styles.time}>{time}</Text>
+            <Text style={styles.time}>{dayjs(createdAt).fromNow()}</Text>
           </View>
         </ImageBackground>
       </Pressable>

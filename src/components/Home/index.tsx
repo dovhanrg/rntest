@@ -1,39 +1,14 @@
 import {FlatList, SafeAreaView, StyleSheet, View} from 'react-native';
 import {SearchBar} from '../SearchBar';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {MainBackgroundSvg} from '../common/MainBackgroundSvg/';
 import {PostPreview} from '../PostPreview';
-import {useStore} from '../../store';
+import {TPost} from '../../store';
+import firestore from '@react-native-firebase/firestore';
 
-const text = `Scientific research has uncovered a new mystery lurking in the depths of the ocean. As scientists delve deeper into the unexplored realms of the underwater world, they have stumbled upon a perplexing phenomenon that challenges our understanding of marine ecosystems. This latest discovery has ignited curiosity and raised questions about the intricate interplay between marine life and their environments.
-At the heart of this mystery lies an enigmatic species of bioluminescent jellyfish found thriving in the abyssal plains of the Pacific Ocean. Unlike their counterparts in shallower waters, these jellyfish exhibit unique luminescent patterns that seem to pulsate with an otherworldly glow. Initial observations suggest that these patterns may serve a crucial yet cryptic purpose, perhaps linked to communication, camouflage, or even defense mechanisms.
-`;
-const image =
-  'https://s3-alpha-sig.figma.com/img/75a4/05fa/f002f29b525831aebc083a3a3d76c40e?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=JVpyn94f-wRzYxwErgVd6YMrK3ys-Cie95S7iNW8BOkjqNyEcdr3V0opHBgG9rJbTKx-d~Y0fiDf1M1JUxRZrfFGBeC0RSVxEzV3G-Ehv2UUJWBG1~BrwJUr3-vZ2CVXz6l-OJ9KjMOlICdy7HqAaTEogb4S2cUzycrTFCT1Z36xHTjzZZtS87VFhapCa9mRKTrPSFVTpNVSHM8yNgPEIcEnZlIRIs6Cy~OGl9nO-OobGdwSI1iCZWrZ3sH3YLU5SFQkev6pKzvpTyapQxk0uHtsrDcpue-QehXMKA2jJN4eKlUu-~blxo-Y29IyOgaC~4hVZ7CDQOH5~MS7WjHupA__';
-
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-    text,
-    time: Date(),
-    imageUrl: image,
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-    text,
-    time: Date(),
-    imageUrl: image,
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-    text,
-    time: Date(),
-    imageUrl: image,
-  },
-];
+function onError(error: any) {
+  console.error(error);
+}
 
 const styles = StyleSheet.create({
   wrapper: {flex: 1},
@@ -43,28 +18,62 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingTop: 30,
   },
+  emptyListContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
 });
 
 export function Home() {
-  const {setPosts, posts} = useStore();
+  const [postFilter, setPostFilter] = useState('');
+  const [posts, setPosts] = useState<TPost[]>([]);
+
+  const handleFilterInput = (input: string) => {
+    setPostFilter(input);
+  };
+
   useEffect(() => {
-    setTimeout(() => {
-      setPosts(DATA);
-    }, 1500);
-  }, [setPosts]);
+    firestore()
+      .collection<TPost>('news')
+      .get()
+      .then(querySnapshot => {
+        setPosts(querySnapshot.docs.map(doc => ({...doc.data(), id: doc.id})));
+      });
+    firestore()
+      .collection<TPost>('news')
+      .onSnapshot(function (querySnapshot) {
+        setPosts(querySnapshot.docs.map(doc => ({...doc.data(), id: doc.id})));
+      }, onError);
+  }, []);
+
   return (
     <SafeAreaView style={styles.wrapper}>
       <View style={styles.container}>
-        <SearchBar />
-        {posts.length > 0 ? (
-          <FlatList
-            data={posts}
-            renderItem={({item}) => <PostPreview {...item} />}
-            keyExtractor={item => item.id}
-          />
-        ) : (
-          <MainBackgroundSvg />
-        )}
+        <SearchBar onChangeText={handleFilterInput} text={postFilter} />
+        <FlatList
+          contentContainerStyle={
+            !posts.length ||
+            !posts.some(
+              post =>
+                post.title.toLowerCase().indexOf(postFilter.toLowerCase()) > -1,
+            )
+              ? styles.emptyListContainer
+              : {}
+          }
+          data={
+            postFilter
+              ? posts.filter(
+                  post =>
+                    post.title.toLowerCase().indexOf(postFilter.toLowerCase()) >
+                    -1,
+                )
+              : posts
+          }
+          renderItem={({item}) => <PostPreview key={item.id} post={item} />}
+          keyExtractor={item => item.id}
+          ListEmptyComponent={<MainBackgroundSvg />}
+        />
       </View>
     </SafeAreaView>
   );

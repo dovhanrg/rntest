@@ -12,7 +12,7 @@ import {APP_ROUTES} from './src/routes';
 import {Home} from './src/components/Home';
 import {Post} from './src/components/Post';
 import {NewPost} from './src/components/NewPost';
-import {Modal} from 'react-native';
+import {Modal} from './src/components/common/Modal';
 
 const Stack = createNativeStackNavigator();
 

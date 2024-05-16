@@ -11,6 +11,8 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     paddingLeft: 48,
+    paddingTop: 18,
+    paddingBottom: 17,
     backgroundColor: 'rgba(164,169,174,0.31)',
     borderRadius: 10,
     marginRight: 10,
@@ -20,8 +22,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export function SearchBar() {
-  const [text, onChangeText] = useState('');
+type Props = {
+  onChangeText: (text: string) => void;
+  text: string;
+};
+
+export function SearchBar({onChangeText, text}: Props) {
   const navigation = useNavigation();
   return (
     <TopContainer customStyles={styles.container}>

@@ -9,8 +9,11 @@ const styles = StyleSheet.create({
   textContainer: {
     position: 'absolute',
     zIndex: -1,
+    right: 0,
     width: '100%',
+    maxWidth: '80%',
     alignItems: 'center',
+    paddingHorizontal: 5,
   },
   headerText: {
     color: '#000',
